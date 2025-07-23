@@ -1,6 +1,8 @@
 # tested with python3.7
 import sys
-from PyPDF2 import PdfFileReader, PdfFileWriter # to install module, run 'python -m pip install PyPDF2'
+# PyPDF2 is deprecated. pypdf is the active successor.
+# To install module, run 'python -m pip install pypdf'
+from pypdf import PdfReader, PdfWriter
 
 def makeOutputFilename(input_filename, total_page_num, start_page, end_page):
     output_filename_part = f'{start_page}-{end_page}'
@@ -13,8 +15,8 @@ def write_pdf(pdf_writer, output_filename):
         pdf_writer.write(output_pdf)
 
 def split(input_filename, page_ranges):
-    pdf = PdfFileReader(input_filename)
-    total_page_num = pdf.getNumPages()
+    pdf = PdfReader(input_filename)
+    total_page_num = len(pdf.pages)
     print(f'total_page_num: {total_page_num}')
 
     if len(page_ranges) == 0:
@@ -39,12 +41,12 @@ def split(input_filename, page_ranges):
             print(f'page range:{page_range} is invalid')
             exit()
 
-        pdf_writer = PdfFileWriter()
+        pdf_writer = PdfWriter()
         current_page_index = start_page - 1
         end_page_index = end_page - 1
         print(f'extracting {page_range}')
         while (current_page_index <= end_page_index):
-            pdf_writer.addPage(pdf.getPage(current_page_index))
+            pdf_writer.add_page(pdf.pages[current_page_index])
             extracted_page_indexes.add(current_page_index)
             current_page_index = current_page_index + 1
 
